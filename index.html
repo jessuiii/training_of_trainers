@@ -47,6 +47,7 @@ button:hover{filter:brightness(1.15)}
 #reviewBox .card{margin-bottom:1rem}
 #reviewBox .question{font-weight:600}
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -56,6 +57,374 @@ button:hover{filter:brightness(1.15)}
 
 <!-- =========  MENU  ========= -->
 <section id="menu">
+  <div class="weekGrid">
+    <button onclick="loadQuiz(1)">Week 1</button>
+    <button onclick="loadQuiz(2)">Week 2</button>
+    <button onclick="loadQuiz(3)">Week 3</button>
+    <button onclick="loadQuiz(4)">Week 4</button>
+    <button onclick="loadQuiz(5)">Week 5</button>
+    <button onclick="loadQuiz(6)">Week 6</button>
+    <button onclick="loadQuiz(7)">Week 7</button>
+    <button onclick="loadQuiz(8)">Week 8</button>
+    <button onclick="loadQuiz(9)">Week 9</button>
+    <button onclick="loadQuiz(10)">Week 10</button>
+    <button onclick="loadQuiz(11)">Week 11</button>
+    <button onclick="loadQuiz(12)">Week 12</button>
+    <button onclick="loadQuiz(0)">Final Revision (120 Qs)</button>
+  </div>
+</section>
+
+<!-- =========  QUIZ AREA  ========= -->
+<section id="quizBox">
+  <div id="scoreBoard">
+    <span id="counter">Question 1 / 10</span>
+    <button onclick="backToMenu()">← Menu</button>
+  </div>
+  <div id="quizContent"></div>
+  <div id="finalScore"></div>
+  <div id="reviewBox"></div>
+</section>
+
+<script>
+/********************************************************************
+ *  MASTER POOL – 12 weeks × 10 questions = 120 total
+ *******************************************************************/
+const masterPool={
+  1:[
+    {q:"Ability x Motivation x Opportunity is the formula of .....?",opts:["Performance Success","Achievement Failure","Career Growth","Employee Satisfaction"],ans:0},
+    {q:"Which of the following is not one of the value systems in an organization?",opts:["Values of hard work","Contribution to the organization","Over use of the organizational resources","Affection to the organization"],ans:2},
+    {q:"The primary goal of training is to move from no acceptance level to",opts:["Confusion","No ownership","No realization levels","High acceptance"],ans:3},
+    {q:"What is the characteristic of a great work place?",opts:["Employees trust the people","Betray the people","No pride in working for the organization","Employees do not enjoy their work"],ans:0},
+    {q:"Which of the following is not the role of trainer?",opts:["Manage the stakeholder","Transfer the skills","Increasing the customer base","Manage communication"],ans:2},
+    {q:"Which one is correct process of the training system?",opts:["Need assessment,Implementation,Evaluation,Objective","Objective,implementation,need assessment,Evaluation","Evaluation,Need assessment,Objective,Implementation","Need Assessment,training objective,implementation,evaluation"],ans:3},
+    {q:"Which of the following is not one of the factors of key relationship for an employee in the organization?",opts:["Other employees","Competitor","Management","Job"],ans:1},
+    {q:"Training Program is required not only for the learning but also for unlearning?",opts:["True","False"],ans:0},
+    {q:"What does SAGE means in the types of learners?",opts:["One who plan their experiences but not learn from them","One who plans and learns from their experiences","Who responds to and learn from the opportunities that comes their way,but do not create opportunities for themselves","Who show little initiative and response to their experiences"],ans:1},
+    {q:"Which of the following refers to the process used to determine whether training is necessary?",opts:["Need assessment","Performance assessment","Potential assessment","Environment Assessment"],ans:0}
+  ],
+  2:[
+    {q:"If the employees do not get the necessary equipment to perform job and if they are unaware of the expected standard of performance then training program is not likely the best solution.",opts:["True","False"],ans:0},
+    {q:"Which of the following is not one of the reasons for providing training to the employees?",opts:["Poor employee performance","Excellent performance by employees","Introduction of new technology","New products"],ans:1},
+    {q:"What is job evaluation?",opts:["The means of determining the relative importance of jobs in a structured,orderly and consistent manner","Qualification required for a particular job","Experience required for a particular job","Working condition of a particular job"],ans:0},
+    {q:"If you want to understand which job stands where in a hierarchy,......is the only way of doing",opts:["Job description","Job specification","Job analysis","Job evaluation"],ans:3},
+    {q:"What is internal locus of control?",opts:["When a person attributes their success to their own work and ability to control results","When a person does not attribute their success to their own work and ability to control results","When a person attributes their success to others'work and ability to control results","When a person attributes their success to their own work and ability to control results of others"],ans:0},
+    {q:"Designing of effective training does not include___",opts:["Selecting of trainers","Creating a Positive learning environment and program design","Training site","Trainers'personal visit"],ans:3},
+    {q:"Which one of the following is not one of the trait-based performance information?",opts:["Attitude","Creativity","Sales made","Initiative"],ans:2},
+    {q:"What is a systematic and objective way of evaluating the work-related behavior and potential of employees called?",opts:["Job description","Performance appraisal","Capacity building","Job specification"],ans:1},
+    {q:"Which of the following leadership excellence potential deals with having presence and authority,enjoy being in charge and taking the lead?",opts:["Coaching others","Learning and developing","Persuading and influencing","Motivating and empowering"],ans:2},
+    {q:"Which of the following refers to factors built into the training program to increase the chances that transfer of training will occur?",opts:["Training evaluation","Training design","Training need","Training organization"],ans:1}
+  ],
+  3:[
+    {q:"Which one of the following is one of the elements of instructional strategies in designing a training program?",opts:["Practice/feedback","Learning styles","Self-efficacy","Opportunity"],ans:0},
+    {q:"A room where training will be conducted is called as",opts:["Trainer's accommodation","Trainees'accommodation","Training site","Training structure"],ans:2},
+    {q:"Which of the following is one of the principles of adult learning?",opts:["No motivation by extrinsic and intrinsic factors","Have need to be self-directed","No problem-solving approach to learning","No use of work-related experience into work process"],ans:1},
+    {q:"People learn best if _____and ______are given as soon as possible after",opts:["Action,Reinforcement","Punishment,feedback","Feedback,Responses","Reinforcement,Feedback"],ans:3},
+    {q:"Checking of the bounce or absorption of sound from the walls,ceiling,floor and furniture is called as",opts:["Glare","Acoustics","Sitting arrangements","Lighting"],ans:1},
+    {q:"How many strategies are there in conflict management?",opts:["Six","Four","Eight","Five"],ans:3},
+    {q:"Which of the following is not one of the purposes of training and development?",opts:["Performance improvement","Disobeying company rules and policies","Upgrading skills","Solving problems"],ans:1},
+    {q:"Which training program focuses on short-term courses that would help employees learn about the latest developments in their respective fields?",opts:["Skills training","Team training","Refreshers training","Cross-functional training"],ans:2},
+    {q:"What does strategic framework approach imply in the Human Resource Management approaches for training and development?",opts:["Development of those skills and competencies in employees,that are unique and superior to competitors,leading to competitive advantage","Development of those skills and competencies equal to competitors","Dependency relationship between training and business strategy","Training is an investment in HR that gives returns in the form of increased productivity"],ans:0},
+    {q:"What is a highly valued activity in the new information economy and a discipline that has come into its own in the digital age?",opts:["Website","Strategy","Design","Technology"],ans:2}
+  ],
+  4:[
+    {q:"Which step in design thinking process and digital pedagogy relates to building representation of one's ideas?",opts:["Ideate","Prototype","Define","Empathize"],ans:1},
+    {q:"One aim of design in all its forms is to generalize across cases,streamlining the process of future design by offering general principles of application or even universal",opts:["True","False"],ans:0},
+    {q:"Which of the following is not one of the advantages of new technology?",opts:["Delivering training to different geographical locations","Accompanying trainees whether at work or home","Training can be completed online using personal computer","Technological disparity among employees"],ans:3},
+    {q:"Which of the factors mentioned below is one of the reasons for higher use of training technology?",opts:["Poor return on investment","Low potential cost of savings","Improvement and upgradation in technology leads to decrease in cost of technology","No customized training"],ans:2},
+    {q:"Which of the following is not one of the characteristics of today's learner?",opts:["Digitally illiterate","Mobile","Always on","Experiential"],ans:0},
+    {q:"Which one is not a common way of collaboration in online learning?",opts:["Chat rooms","Online conferences","Traditional classroom method","Social networking"],ans:2},
+    {q:"In MOOC,what does 'C'stand for?",opts:["Communication","Course","Competition","Collaboration"],ans:1},
+    {q:"Which of the following is not correct related to MOOC?",opts:["No tuition fees","Open access","Open course for all regardless of location","Students base is less diversified"],ans:3},
+    {q:".........refers to the processes,experiences,contexts,outcomes and relationships of teaching and learning in higher",opts:["Management","Pedagogy","Andragogy","Ergonomics"],ans:1},
+    {q:"Which of the following is fourth stage of experiential learning training program?",opts:["Gain conceptual knowledge and theory","Analyze the activity","Connect the theory and activity with on-the-job or real life situations","Take part in a behavioral simulations"],ans:2}
+  ],
+  5:[
+    {q:"Which of the group building method emphasizes on training the team managers and facilitator receives?",opts:["Team training","Cross training","Coordination training","Team Leader Training"],ans:3},
+    {q:"Which of the following emphasizes on speaker visits the session for a predetermined time period?",opts:["Team teaching","Panels","Student Presentation","Guest Speaker"],ans:3},
+    {q:"________presents trainees with a model who demonstrates key behaviors to replicate and provides trainees with the opportunity to practice key",opts:["Behavior modeling","E-learning","Committee assignments","Special meetings"],ans:0},
+    {q:"Leaders with good _____are able to get the most out of their people?",opts:["Human skills","Conceptual skills","Technical skills","Visual skills"],ans:0},
+    {q:"Which statement is true about Great Workplace?",opts:["Trust less the people you work for","Have pride in what you do.","Enjoy less the people you work with","Have low commitment for the"],ans:1},
+    {q:"In which method trainees are passive recipients?",opts:["Lecture method","Role plays","Business Games","Case Study"],ans:0},
+    {q:"For Hindustan Unilever Co.Training is _____process?",opts:["Intermittent","One time","Continuous","Occasional"],ans:2},
+    {q:"Which one of the following is called bible for McDonald's employees?",opts:["Operation and training manual","Safety manual","Recruitment manual","Infrastructure manual"],ans:0},
+    {q:"Which of the course at HUL (Hindustan Unilever Limited) relates to various aspects of company's operation,and a module on values of a company?",opts:["Skill based.","General awareness","Behavioural template","Safety manual"],ans:1},
+    {q:"Which of the following is the second stage of Group formation?",opts:["Norming","Storming","Adjourning","Performing"],ans:1}
+  ],
+  6:[
+    {q:"Which of the following are the example of functional behavior in training group except?",opts:["Completing assignment and projects","Willingness and ability to provide feedback","Giving support and encouragement","Using threats of violence"],ans:3},
+    {q:"Which of the following participants come with a strong personal agenda and motivates to the programme?",opts:["Socializer","Self-seeker","Tourist","Critic"],ans:1},
+    {q:"Which of the following is not the key element in group process?",opts:["Participants","Training Programme","Training Agency","No.of Family members"],ans:3},
+    {q:"What is correct sequence of Stages of Development of Training Group?",opts:["Preliminary,Development,and Concluding","People,Design,Consistent","Purpose,Design,Curious","People,Design,Evaluation"],ans:0},
+    {q:"Case study especially appropriate for developing ___________?",opts:["Lower order thinking","Higher Order Intellectual Skills","Designing Skills","Technical Skills"],ans:1},
+    {q:"State true and false: The goal of case study is to arrive at one right answer but not to learn how to journey toward an answer effectively and",opts:["True","False"],ans:1},
+    {q:"Which of the following is correct sequence of process of case development?",opts:["Identify a story,Gather Information,Prepare a story outline,Decide on administrative issues,Prepare case materials.","Identify a story,Prepare a story outline,Decide on administrative issues,Gather Information,Prepare case materials.","Identify a story,Prepare a story outline,Gather Information,Prepare case materials,Decide on administrative issues.","Prepare a story outline,Gather Information,Prepare case materials,Decide on administrative issues,Identify a"],ans:0},
+    {q:"Which of the following is second stage in case analysis Process?",opts:["Framing","Synthesizing","Concluding","Labeling"],ans:0},
+    {q:"State true and false: The key to good case analysis is to break down the case facts into a clear,understandable and useful",opts:["True","False"],ans:0},
+    {q:"Business games aims to enhance the participants understanding except..",opts:["Team work norms and procedure","Problem of organization policy and decision making","Subordinate family issues","Specific organizational problems"],ans:2}
+  ],
+  7:[
+    {q:"While evaluating the game comparison must be made with _______.",opts:["Political situation","Family situation","Personal situation","Real-life situation"],ans:3},
+    {q:"While conducting the game trainer must be unclear about games various aspects,situations,and",opts:["True","False"],ans:1},
+    {q:"During the process of _______,participants may also learn to be explicit,find information,conduct analyses,collaborate,plan and take steps,",opts:["Debriefing","Production","Gossiping","Chit chatting"],ans:0},
+    {q:"Trainers should decide the nature of business game after understanding the _______________",opts:["Profile of the owners of the business","Competitors","Profile of the family members","Profile of the participants"],ans:3},
+    {q:"State true and false: Business games can be used for orienting the participants and familiarizing them with the functional dynamics of an",opts:["True","False"],ans:0},
+    {q:"Which of the following is required to enhance the team effectiveness?",opts:["Synergy","Unity of command","Confidence","Output"],ans:0},
+    {q:"______gives a sense of practical applicability of the subject.",opts:["Management Games","Role plays","Case study","Business exercise"],ans:0},
+    {q:"Business games are primarily used for management skills development.",opts:["False","True"],ans:1},
+    {q:"Which type of game is suitable,if theme of training program is labour relations?",opts:["Argument in contract negotiations","Price to charge for a new product.","Financing the purchase of new technology","Product development"],ans:0},
+    {q:"State true and false: The more meaning the exercise is to the participants,the less trouble the trainer should have with focus and intensity.",opts:["True","False"],ans:0}
+  ],
+  8:[
+    {q:"Promoting disagreement or discord in the group is an example of _____",opts:["Dysfunctional behavior","Functional behavior","Cognitive behavior","Emotional behavior"],ans:0},
+    {q:"Which are the following are the uses of role plays except?",opts:["To demonstrate clearly a feature of some specific behavior in a lively and direct way","To help people understand a situation from the viewpoint of others.","To give insights into important behavior of someone and its effect on others","To decrease the involvement of the"],ans:3},
+    {q:"______is used when no script is made available and the participants are asked to play the roles before the group.",opts:["Simple role play","Multiple role play","Reverse role-play","Spontaneous role-play"],ans:3},
+    {q:"__________emphasizes that effective groups depend on a proper match between a leaders'style of interacting with subordinates and the degree to which the situation gives control and influences the",opts:["Fiedler'contingency model","Leader member exchange theory","Maslow Need Theory","Theory X and Y"],ans:0},
+    {q:"______referred as a degree of confidence,trust,and respect subordinates in their",opts:["Leader-member relations","Task structure","Family structure","Position power"],ans:0},
+    {q:"Which of the following leadership is to be followed when follower is able and willing?",opts:["Directive","High task and relationship orientation","Supportive","Delegating"],ans:3},
+    {q:"A leader with high LPC (Least preferred co-worker)is better in:",opts:["A relationship-oriented leadership style","A concern for profit","A concern for production","A task-oriented leadership style"],ans:0},
+    {q:"Who founded the model managerial Grid?",opts:["Robert Blake and Jane Mouton","Jim green and larry page","Sunder Pichai","Bill gates and Steve Jobs"],ans:0},
+    {q:"State true and false:Role play helps in establishing a link between the training and realities of practical",opts:["True","False"],ans:0},
+    {q:"Which is among below is false about social sensitivity?",opts:["It is important for group effectiveness","It helps in understanding group dynamics","It is not related to leadership","It helps in building relationships"],ans:2}
+  ],
+  9:[
+    {q:"Which of the following is not one of the characteristics of a good training objective?",opts:["Specific","Measurable","Achievable","Vague"],ans:3},
+    {q:"Which of the following is the first step in designing a training program?",opts:["Need assessment","Setting objectives","Implementation","Evaluation"],ans:0},
+    {q:"Which of the following is not one of the levels of evaluation proposed by Kirkpatrick?",opts:["Reaction","Learning","Behavior","Profit"],ans:3},
+    {q:"Which of the following is not one of the methods of training evaluation?",opts:["Questionnaires","Interviews","Observation","Ignoring feedback"],ans:3},
+    {q:"Which of the following is not one of the benefits of training evaluation?",opts:["Improves training programs","Provides feedback to trainers","Wastes resources","Measures effectiveness"],ans:2},
+    {q:"Which of the following is not one of the types of training outcomes?",opts:["Learning","Behavior","Results","Profit"],ans:3},
+    {q:"Which of the following is not one of the factors affecting transfer of training?",opts:["Trainee characteristics","Training design","Work environment","Trainer's salary"],ans:3},
+    {q:"Which of the following is not one of the strategies to enhance transfer of training?",opts:["Provide opportunities to use skills","Provide reinforcement","Ignore trainee needs","Provide support"],ans:2},
+    {q:"Which of the following is not one of the barriers to transfer of training?",opts:["Lack of support from supervisors","Lack of opportunities to use skills","Positive work environment","Lack of reinforcement"],ans:2},
+    {q:"Which of the following is not one of the ways to overcome barriers to transfer of training?",opts:["Provide support","Provide opportunities","Ignore feedback","Provide reinforcement"],ans:2}
+  ],
+  10:[
+    {q:"Which of the following is not one of the characteristics of a good trainer?",opts:["Knowledgeable","Unprepared","Good communicator","Flexible"],ans:1},
+    {q:"Which of the following is not one of the roles of a trainer?",opts:["Facilitator","Expert","Dictator","Coach"],ans:2},
+    {q:"Which of the following is not one of the skills required for a trainer?",opts:["Presentation skills","Listening skills","Ignoring participants","Feedback skills"],ans:2},
+    {q:"Which of the following is not one of the challenges faced by trainers?",opts:["Diverse audience","Technology issues","Motivated participants","Time constraints"],ans:2},
+    {q:"Which of the following is not one of the ways to handle difficult participants?",opts:["Ignore them","Address their concerns","Use their input","Redirect their energy"],ans:0},
+    {q:"Which of the following is not one of the techniques to engage participants?",opts:["Interactive activities","Lectures only","Group discussions","Hands-on practice"],ans:1},
+    {q:"Which of the following is not one of the ways to manage time during training?",opts:["Prioritize content","Stick to schedule","Ignore breaks","Use time wisely"],ans:2},
+    {q:"Which of the following is not one of the ways to handle technical issues during training?",opts:["Be prepared","Have backup plans","Panic","Stay calm"],ans:2},
+    {q:"Which of the following is not one of the ways to evaluate trainer effectiveness?",opts:["Participant feedback","Peer review","Self-assessment","Ignoring results"],ans:3},
+    {q:"Which of the following is not one of the ways to improve trainer effectiveness?",opts:["Continuous learning","Practice","Ignoring feedback","Seeking mentorship"],ans:2}
+  ],
+  11:[
+    {q:"Which of the following is not one of the trends in training and development?",opts:["E-learning","Mobile learning","Microlearning","Ignoring technology"],ans:3},
+    {q:"Which of the following is not one of the benefits of e-learning?",opts:["Flexibility","Cost-effective","No interaction","Accessibility"],ans:2},
+    {q:"Which of the following is not one of the challenges of e-learning?",opts:["Technical issues","Lack of interaction","Self-discipline required","Too much interaction"],ans:3},
+    {q:"Which of the following is not one of the types of e-learning?",opts:["Synchronous","Asynchronous","Blended","Ignoring learners"],ans:3},
+    {q:"Which of the following is not one of the features of a good e-learning platform?",opts:["User-friendly","Interactive","Complex navigation","Accessible"],ans:2},
+    {q:"Which of the following is not one of the ways to make e-learning effective?",opts:["Interactive content","Regular feedback","Ignoring learners","Clear objectives"],ans:2},
+    {q:"Which of the following is not one of the benefits of mobile learning?",opts:["Learning on the go","Flexibility","Limited access","Convenience"],ans:2},
+    {q:"Which of the following is not one of the challenges of mobile learning?",opts:["Small screen size","Distractions","Unlimited data","Battery life"],ans:2},
+    {q:"Which of the following is not one of the benefits of microlearning?",opts:["Bite-sized content","Easy to digest","Time-consuming","Focused learning"],ans:2},
+    {q:"Which of the following is not one of the ways to implement microlearning?",opts:["Short videos","Infographics","Long lectures","Quizzes"],ans:2}
+  ],
+  12:[
+    {q:"Which of the following is not one of the future trends in training and development?",opts:["AI in training","Virtual reality","Ignoring innovation","Personalized learning"],ans:2},
+    {q:"Which of the following is not one of the benefits of using AI in training?",opts:["Personalized learning","Data-driven insights","No human touch","Adaptive learning"],ans:2},
+    {q:"Which of the following is not one of the applications of VR in training?",opts:["Simulations","Safe practice environment","Expensive setup","Realistic scenarios"],ans:2},
+    {q:"Which of the following is not one of the benefits of personalized learning?",opts:["Meets individual needs","Improves engagement","One-size-fits-all","Better outcomes"],ans:2},
+    {q:"Which of the following is not one of the ways to implement personalized learning?",opts:["Adaptive algorithms","Learner analytics","Ignoring differences","Customized content"],ans:2},
+    {q:"Which of the following is not one of the challenges of implementing new technologies in training?",opts:["Cost","Resistance to change","Easy adoption","Technical issues"],ans:2},
+    {q:"Which of the following is not one of the ways to overcome resistance to new technologies?",opts:["Training","Support","Ignoring concerns","Communication"],ans:2},
+    {q:"Which of the following is not one of the benefits of continuous learning?",opts:["Staying relevant","Career growth","Stagnation","Skill development"],ans:2},
+    {q:"Which of the following is not one of the ways to promote continuous learning?",opts:["Learning culture","Resources","Ignoring employees","Support from leadership"],ans:2},
+    {q:"Which of the following is not one of the trainer should have with focus and intensity.",opts:["True","False"],ans:0}
+  ],
+  8:[
+    {q:"Promoting disagreement or discord in the group is an example of _____",opts:["Dysfunctional behavior","Functional behavior","Cognitive behavior","Emotional behavior"],ans:0},
+    {q:"Which are the following are the uses of role plays except?",opts:["To demonstrate clearly a feature of some specific behavior in a lively and direct way","To help people understand a situation from the viewpoint of others.","To give insights into important behavior of someone and its effect on others","To decrease the involvement of the"],ans:3},
+    {q:"______is used when no script is made available and the participants are asked to play the roles before the group.",opts:["Simple role play","Multiple role play","Reverse role-play","Spontaneous role-play"],ans:3},
+    {q:"__________emphasizes that effective groups depend on a proper match between a leaders'style of interacting with subordinates and the degree to which the situation gives control and influences the",opts:["Fiedler'contingency model","Leader member exchange theory","Maslow Need Theory","Theory X and Y"],ans:0},
+    {q:"______referred as a degree of confidence,trust,and respect subordinates in their",opts:["Leader-member relations","Task structure","Family structure","Position power"],ans:0},
+    {q:"Which of the following leadership is to be followed when follower is able and willing?",opts:["Directive","High task and relationship orientation","Supportive","Delegating"],ans:3},
+    {q:"A leader with high LPC (Least preferred co-worker)is better in:",opts:["A relationship-oriented leadership style","A concern for profit","A concern for production","A task-oriented leadership style"],ans:0},
+    {q:"Who founded the model managerial Grid?",opts:["Robert Blake and Jane Mouton","Jim green and larry page","Sunder Pichai","Bill gates and Steve Jobs"],ans:0},
+    {q:"State true and false:Role play helps in establishing a link between the training and realities of practical",opts:["True","False"],ans:0},
+    {q:"Which is among below is false about social sensitivity?",opts:["It is important for group effectiveness","It helps in understanding group dynamics","It is not related to leadership","It helps in building relationships"],ans:2}
+  ],
+  9:[
+    {q:"Which of the following is not one of the characteristics of a good training objective?",opts:["Specific","Measurable","Achievable","Vague"],ans:3},
+    {q:"Which of the following is the first step in designing a training program?",opts:["Need assessment","Setting objectives","Implementation","Evaluation"],ans:0},
+    {q:"Which of the following is not one of the levels of evaluation proposed by Kirkpatrick?",opts:["Reaction","Learning","Behavior","Profit"],ans:3},
+    {q:"Which of the following is not one of the methods of training evaluation?",opts:["Questionnaires","Interviews","Observation","Ignoring feedback"],ans:3},
+    {q:"Which of the following is not one of the benefits of training evaluation?",opts:["Improves training programs","Provides feedback to trainers","Wastes resources","Measures effectiveness"],ans:2},
+    {q:"Which of the following is not one of the types of training outcomes?",opts:["Learning","Behavior","Results","Profit"],ans:3},
+    {q:"Which of the following is not one of the factors affecting transfer of training?",opts:["Trainee characteristics","Training design","Work environment","Trainer's salary"],ans:3},
+    {q:"Which of the following is not one of the strategies to enhance transfer of training?",opts:["Provide opportunities to use skills","Provide reinforcement","Ignore trainee needs","Provide support"],ans:2},
+    {q:"Which of the following is not one of the barriers to transfer of training?",opts:["Lack of support from supervisors","Lack of opportunities to use skills","Positive work environment","Lack of reinforcement"],ans:2},
+    {q:"Which of the following is not one of the ways to overcome barriers to transfer of training?",opts:["Provide support","Provide opportunities","Ignore feedback","Provide reinforcement"],ans:2}
+  ],
+  10:[
+    {q:"Which of the following is not one of the characteristics of a good trainer?",opts:["Knowledgeable","Unprepared","Good communicator","Flexible"],ans:1},
+    {q:"Which of the following is not one of the roles of a trainer?",opts:["Facilitator","Expert","Dictator","Coach"],ans:2},
+    {q:"Which of the following is not one of the skills required for a trainer?",opts:["Presentation skills","Listening skills","Ignoring participants","Feedback skills"],ans:2},
+    {q:"Which of the following is not one of the challenges faced by trainers?",opts:["Diverse audience","Technology issues","Motivated participants","Time constraints"],ans:2},
+    {q:"Which of the following is not one of the ways to handle difficult participants?",opts:["Ignore them","Address their concerns","Use their input","Redirect their energy"],ans:0},
+    {q:"Which of the following is not one of the techniques to engage participants?",opts:["Interactive activities","Lectures only","Group discussions","Hands-on practice"],ans:1},
+    {q:"Which of the following is not one of the ways to manage time during training?",opts:["Prioritize content","Stick to schedule","Ignore breaks","Use time wisely"],ans:2},
+    {q:"Which of the following is not one of the ways to handle technical issues during training?",opts:["Be prepared","Have backup plans","Panic","Stay calm"],ans:2},
+    {q:"Which of the following is not one of the ways to evaluate trainer effectiveness?",opts:["Participant feedback","Peer review","Self-assessment","Ignoring results"],ans:3},
+    {q:"Which of the following is not one of the ways to improve trainer effectiveness?",opts:["Continuous learning","Practice","Ignoring feedback","Seeking mentorship"],ans:2}
+  ],
+  11:[
+    {q:"Which of the following is not one of the trends in training and development?",opts:["E-learning","Mobile learning","Microlearning","Ignoring technology"],ans:3},
+    {q:"Which of the following is not one of the benefits of e-learning?",opts:["Flexibility","Cost-effective","No interaction","Accessibility"],ans:2},
+    {q:"Which of the following is not one of the challenges of e-learning?",opts:["Technical issues","Lack of interaction","Self-discipline required","Too much interaction"],ans:3},
+    {q:"Which of the following is not one of the types of e-learning?",opts:["Synchronous","Asynchronous","Blended","Ignoring learners"],ans:3},
+    {q:"Which of the following is not one of the features of a good e-learning platform?",opts:["User-friendly","Interactive","Complex navigation","Accessible"],ans:2},
+    {q:"Which of the following is not one of the ways to make e-learning effective?",opts:["Interactive content","Regular feedback","Ignoring learners","Clear objectives"],ans:2},
+    {q:"Which of the following is not one of the benefits of mobile learning?",opts:["Learning on the go","Flexibility","Limited access","Convenience"],ans:2},
+    {q:"Which of the following is not one of the challenges of mobile learning?",opts:["Small screen size","Distractions","Unlimited data","Battery life"],ans:2},
+    {q:"Which of the following is not one of the benefits of microlearning?",opts:["Bite-sized content","Easy to digest","Time-consuming","Focused learning"],ans:2},
+    {q:"Which of the following is not one of the ways to implement microlearning?",opts:["Short videos","Infographics","Long lectures","Quizzes"],ans:2}
+  ],
+  12:[
+    {q:"Which of the following is not one of the future trends in training and development?",opts:["AI in training","Virtual reality","Ignoring innovation","Personalized learning"],ans:2},
+    {q:"Which of the following is not one of the benefits of using AI in training?",opts:["Personalized learning","Data-driven insights","No human touch","Adaptive learning"],ans:2},
+    {q:"Which of the following is not one of the applications of VR in training?",opts:["Simulations","Safe practice environment","Expensive setup","Realistic scenarios"],ans:2},
+    {q:"Which of the following is not one of the benefits of personalized learning?",opts:["Meets individual needs","Improves engagement","One-size-fits-all","Better outcomes"],ans:2},
+    {q:"Which of the following is not one of the ways to implement personalized learning?",opts:["Adaptive algorithms","Learner analytics","Ignoring differences","Customized content"],ans:2},
+    {q:"Which of the following is not one of the challenges of implementing new technologies in training?",opts:["Cost","Resistance to change","Easy adoption","Technical issues"],ans:2},
+    {q:"Which of the following is not one of the ways to overcome resistance to new technologies?",opts:["Training","Support","Ignoring concerns","Communication"],ans:2},
+    {q:"Which of the following is not one of the benefits of continuous learning?",opts:["Staying relevant","Career growth","Stagnation","Skill development"],ans:2},
+    {q:"Which of the following is not one of the ways to promote continuous learning?",opts:["Learning culture","Resources","Ignoring employees","Support from leadership"],ans:2},
+    {q:"Which of the following is not one of the roles of HR in training and development?",opts:["Identifying needs","Providing resources","Ignoring employees","Evaluating effectiveness"],ans:2}
+  ]
+};
+
+/* ---------- helpers ---------- */
+const rand = () => Math.random() - 0.5;
+const shuffle = arr => [...arr].sort(rand);
+
+/* ---------- state ---------- */
+let sessionWeek = 1;   // week we are *currently* playing
+let currentQ   = 0;    // question index
+let quizData   = [];   // shuffled questions for this session
+let userAnswers= [];   // what user picked
+
+/* ---------- start / restart a quiz ---------- */
+function loadQuiz(week){
+  sessionWeek = week;
+  currentQ    = 0;
+  userAnswers = [];
+
+  /* ---- clean any previous result/review ---- */
+  document.getElementById('finalScore').innerHTML = '';
+  document.getElementById('reviewBox').innerHTML  = '';
+
+  /* ---- build question pool ---- */
+  if(week === 0){                 // 120-Q revision
+    quizData = shuffle(Object.values(masterPool).flat());
+  }else{
+    quizData = shuffle([...masterPool[week]]);
+  }
+
+  /* ---- shuffle options inside every question ---- */
+  quizData = quizData.map(q=>{
+     const opts = shuffle(q.opts.map((text,idx)=>({text,idx})));
+     const newAns = opts.findIndex(o=>o.idx === q.ans);
+     return {q:q.q, opts:opts.map(o=>o.text), ans:newAns};
+  });
+
+  /* ---- switch UI ---- */
+  document.getElementById('menu').style.display  = 'none';
+  document.getElementById('quizBox').style.display='block';
+  renderQuestion();
+}
+
+/* ---------- render one question ---------- */
+function renderQuestion(){
+  const q = quizData[currentQ];
+  document.getElementById('counter').textContent =
+        `Question ${currentQ+1} / ${quizData.length}`;
+
+  const html = `
+    <div class="card">
+      <div class="question">${q.q}</div>
+      <div class="options">
+        ${q.opts.map((opt,i)=>`
+          <label>
+            <input type="radio" name="q" value="${i}">
+            ${opt}
+          </label>
+        `).join('')}
+      </div>
+      <button onclick="submitAnswer()">Submit</button>
+    </div>
+  `;
+  document.getElementById('quizContent').innerHTML = html;
+}
+
+/* ---------- submit & move on ---------- */
+function submitAnswer(){
+  const sel = document.querySelector('input[name="q"]:checked');
+  if(!sel){ alert('Please pick an option'); return; }
+  userAnswers.push(parseInt(sel.value));
+
+  if(currentQ < quizData.length-1){
+    currentQ++;
+    renderQuestion();
+  }else{
+    showResults();
+  }
+}
+
+/* ---------- results & review ---------- */
+function showResults(){
+  let correct = 0;
+  let reviewHTML = '<h2>Review</h2>';
+
+  quizData.forEach((q,i)=>{
+    const got = userAnswers[i];
+    const right = q.ans;
+    if(got === right) correct++;
+
+    reviewHTML += `
+      <div class="card">
+        <div class="question">${q.q}</div>
+        <div class="options">
+          ${q.opts.map((opt,idx)=>{
+            let cls = '';
+            if(idx === right) cls = 'correct';
+            else if(idx === got && got !== right) cls = 'wrong';
+            return `<label class="${cls}">${opt}</label>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  const pct = Math.round((correct/quizData.length)*100);
+  document.getElementById('quizContent').innerHTML='';
+  document.getElementById('finalScore').innerHTML = `
+    <div class="card" id="finalScore">
+      You scored <b>${correct} / ${quizData.length}</b>  (${pct}%)
+      <br><br>
+      <button onclick="restartSession()">Restart this session</button>
+    </div>
+  `;
+  document.getElementById('reviewBox').innerHTML = reviewHTML;
+}
+
+/* ---------- restart same week ---------- */
+function restartSession(){
+  loadQuiz(sessionWeek);
+}
+
+/* ---------- back to menu ---------- */
+function backToMenu(){
+  document.getElementById('quizBox').style.display='none';
+  document.getElementById('menu').style.display='block';
+  document.getElementById('finalScore').innerHTML='';
+  document.getElementById('reviewBox').innerHTML='';
+}
+</script>
+</body>
+</html><section id="menu">
   <div class="weekGrid">
     <button onclick="loadQuiz(1)">Week 1</button>
     <button onclick="loadQuiz(2)">Week 2</button>
